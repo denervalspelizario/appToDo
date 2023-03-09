@@ -8,7 +8,13 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');    
+  const [type, setType] = useState('login'); // state valor inicial 'login'
  
+  function handleLogin(){
+    alert('Teste button login')
+  }
+
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -29,6 +35,7 @@ export default function Login() {
             style={styles.input}
             value={email} // value de input atrelado a state email ou seja oq tiver dentro de state email vai estar dentro do input
             onChange={(text) => setEmail(text)} // funcao que usuario ao digitar no input o dado é repassado a state email
+            maxLength={120}
         />
     </View>
     
@@ -38,24 +45,47 @@ export default function Login() {
             placeholder='Sua senha'
             style={styles.input}
             value={password} 
+            secureTextEntry={true}
             onChange={(text) => setPassword(text)}
+            maxLength={12}
         />
     </View>
     
 
     <TouchableOpacity
         style={styles.handleLogin}
+        onPress={handleLogin}
+
     
     >
-        <Text style={styles.textLogin}>Acessar</Text>
+        <Text style={styles.textLogin}>
+
+          {type === 'login' ?  // state se inicia com valor login(linha 11)
+            'Acessar'          // 
+            : 
+            'Cadastrar'
+          } 
+
+        </Text>
     </TouchableOpacity>
 
 
     <TouchableOpacity
         style={styles.handleSign}
-    
-    >
-        <Text style={styles.textCadastro}>Criar uma conta</Text>
+        onPress={() => setType(type => type === 'login' ? 'cadastrar' : 'login')}  // ao clicar dispara a funcao anonima que pega a state type e verifica se tem valor de 'login'
+                                                                                   // se tiver altera a state type para 'cadastrar'  senao recebe valor 'login' 
+                                                                                  // como altera o state type tb em cadeia altera o texto dos botoes(ler linha 63 e 81)
+                                                                                  // pois os textos dos botaoes estao vinculados a ao conteudo do state type 
+    >                                                                                   
+        <Text style={styles.textCadastro}>
+
+        {type === 'login' ?  // state se inicia com valor login(linha 11)
+            'Criar uma conta'          // 
+            : 
+            'Já possuo um a conta'
+          } 
+
+        </Text>
     </TouchableOpacity>
 
     </SafeAreaView>
@@ -68,16 +98,17 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     backgroundColor: '#00BFFF',
     paddingHorizontal: 10,
-    paddingTop: '40%',
-    alignItems: 'center'
+    paddingTop: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   imageLogin: {
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
     borderRadius: 80,
   },
   logoContainer: {
-    marginBottom: 20,
+    marginBottom: 15,
   },
   textImg: {
     textAlign: 'center',
@@ -111,7 +142,7 @@ const styles = StyleSheet.create({
   handleSign: {
     borderWidth: 2,
     borderColor: '#FFF',
-    marginTop: '25%',
+    marginTop: 100,
     backgroundColor: '#00BFFF',
     borderRadius: 20,
     paddingHorizontal: 20,
