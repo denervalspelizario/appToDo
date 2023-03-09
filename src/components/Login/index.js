@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Image, View  } from 'react-native';
 import ToDoImage from '../../../assets/todoimage.png'
 import { FontAwesome } from '@expo/vector-icons';
+import firebase from '../../services/FirebaseConnection';  // importando o firebase
 
 
 export default function Login() { 
@@ -11,7 +12,21 @@ export default function Login() {
   const [type, setType] = useState('login'); // state valor inicial 'login'
  
   function handleLogin(){
-    alert('Teste button login')
+
+    if(type === 'login'){
+
+      //login
+      const user = firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((user) => {
+        console.log(user.user)
+      })
+
+    } else {
+
+      // cadastrar
+
+    }
+
   }
 
 
