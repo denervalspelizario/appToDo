@@ -5,25 +5,49 @@ import { FontAwesome } from '@expo/vector-icons';
 import firebase from '../../services/FirebaseConnection';  // importando o firebase
 
 
-export default function Login() { 
+export default function Login({ changeStatus }) {  // change Status é um props(ler linha 12 de app.js)
 
+  const [type, setType] = useState('login'); // state valor inicial 'login'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');    
-  const [type, setType] = useState('login'); // state valor inicial 'login'
+  
  
   function handleLogin(){
 
-    if(type === 'login'){
+    if(type === 'login'){ // se type tiver valor de login(linha 12)
 
-      //login
-      const user = firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((user) => {
-        console.log(user.user)
+      // screen  login 
+
+      const user = firebase.auth().signInWithEmailAndPassword(email, password)  // acessa a atenticacao do firebase e atravez da funcao sign 
+      .then((user) => { // then = deu ok logou                                  // usando os parametros state email e password loga la no servidor    
+        
+        changeStatus(user.user.uid) // apos logar recupera e acessa o uid mas pdoeria ser qualquer dadod e cadastro(ver linha 8 e 12 de app.js)
+      
       })
+      .catch((error) =>{  // deu erro  recebe o alert
+        console.log(error)
+        alert('Ops parece que deu algum erro!')
+      })
+
+      setEmail('') // zerando states
+      setPassword('')
 
     } else {
 
-      // cadastrar
+      // screen cadastrar
+
+      const user = firebase.auth().createUserWithEmailAndPassword(email, password)  //  cria uma auth pela funcao create pelos parametros email e password
+      .then((user) => {                                                             // que são states que recebem dados pelos inputs
+      
+        changeStatus(user.user.uid) // apos logar recupera e acessa o uid mas pdoeria ser qualquer dadod e cadastro(ver linha 8 e 12 de app.js)  
+
+      })
+      .catch((error) =>{  // deu erro  recebe o alert
+        console.log(error)
+        alert('Ops parece que deu algum erro no cadastro!')
+      })
+
+      
 
     }
 
@@ -39,8 +63,11 @@ export default function Login() {
             style={styles.imageLogin}
         />  
         <Text style={styles.textImg}>
-            To Do App
+            To Do App 
         </Text>
+        
+
+
     </View>  
     
     <View style={styles.formInput}>
@@ -49,8 +76,9 @@ export default function Login() {
             placeholder='Seu email'
             style={styles.input}
             value={email} // value de input atrelado a state email ou seja oq tiver dentro de state email vai estar dentro do input
-            onChange={(text) => setEmail(text)} // funcao que usuario ao digitar no input o dado é repassado a state email
+            onChangeText={(text) => setEmail(text)} // funcao que usuario ao digitar no input o dado é repassado a state email
             maxLength={120}
+            keyboardType='email-address'
         />
     </View>
     
@@ -61,7 +89,7 @@ export default function Login() {
             style={styles.input}
             value={password} 
             secureTextEntry={true}
-            onChange={(text) => setPassword(text)}
+            onChangeText={(text) => setPassword(text)}
             maxLength={12}
         />
     </View>
@@ -70,9 +98,9 @@ export default function Login() {
     <TouchableOpacity
         style={styles.handleLogin}
         onPress={handleLogin}
-
-    
     >
+
+      
         <Text style={styles.textLogin}>
 
           {type === 'login' ?  // state se inicia com valor login(linha 11)
