@@ -19,5 +19,5 @@ if(!firebase.apps.length){                     // condicional para chamar o fire
     firebase.initializeApp(firebaseConfig)     // essa condicional é meio que default 
 }
 
-export default firebase;  // expostando o database
+export default firebase;  // expostando o database\
 

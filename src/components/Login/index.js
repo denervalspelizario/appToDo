@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Image, View  } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Image, View, Alert  } from 'react-native';
 import ToDoImage from '../../../assets/todoimage.png'
 import { FontAwesome } from '@expo/vector-icons';
 import firebase from '../../services/FirebaseConnection';  // importando o firebase
 
 
-export default function Login({ changeStatus }) {  // change Status é um props(ler linha 12 de app.js)
+export default function Login({ changeStatus }) {  // changeStatus é um props(ler linha 12 de app.js e linha 24 e 42)
 
   const [type, setType] = useState('login'); // state valor inicial 'login'
   const [email, setEmail] = useState('');
@@ -37,10 +37,12 @@ export default function Login({ changeStatus }) {  // change Status é um props(
       // screen cadastrar
 
       const user = firebase.auth().createUserWithEmailAndPassword(email, password)  //  cria uma auth pela funcao create pelos parametros email e password
-      .then((user) => {                                                             // que são states que recebem dados pelos inputs
+      .then(() => {// deu certo criou o login                                   // que são states que recebem dados pelos inputs
       
-        changeStatus(user.user.uid) // apos logar recupera e acessa o uid mas pdoeria ser qualquer dadod e cadastro(ver linha 8 e 12 de app.js)  
-
+        Alert.alert('Atenção', 'login criado com sucesso')
+        setEmail('') // zerando states
+        setPassword('')
+        setType('login') // depois que criou o login mudando a state para screen de login
       })
       .catch((error) =>{  // deu erro  recebe o alert
         console.log(error)
