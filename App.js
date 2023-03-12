@@ -15,6 +15,20 @@ export default function App() {
   const [user, setUser] = useState(null) // state user usada para controlar o login e logout se inicia null
   const [newTask, setNewTask] = useState('') // state inicia vazia
 
+
+
+  function deleteTask(key){ // funcao para deletar a tarefa - tem como parametro a key é por ela que vamos deletar
+
+    console.log(key)
+
+  }
+
+  function editarTask(data){
+
+    console.log("Item clicado ", data)
+
+  }
+
   if( !user){ // se user tiver algum dado ou seja está logado retorna componente Login
 
     return <Login changeStatus={ (user) => setUser(user) } // atravez de changestatus(uma especie de props) eu acesso o user(dado de login) 
@@ -45,12 +59,13 @@ export default function App() {
 
           keyExtractor={(item) => item.key} //linkando o id da lista task a lista do flatlist
           
-          renderItem={ ({ item }) => ( // vai rederizar ou seja mostrar item(que recebeu base de dados do tasks(ver linha 44) ) 
+          renderItem={ ({ item }) => ( // vai rederizar ou seja mostrar item(que recebeu base de dados do tasks(ver linha 52) ) 
             
-            <Task data={item}/> // data recebe todos os dados atravez de item(ler linha 48 e 44) e será rpassado via props  
-                                // component Task que tera toda a estrutura pra mostrar o dado
-            )}
-        />
+            <Task data={item} deleteItem={deleteTask} editarItem={editarTask}/> // data recebe todos os dados atravez de item(ler linha 48 e 44) e será rpassado via props  
+                                                        // component Task que tera toda a estrutura pra mostrar o dado
+            )}                                          // pelo deleteItem passando a funcao de deletartask para o componente Task para usar la
+                                                        // pelo editarItem passando a funcao de editartask  para o componente Task para usar la
+        />                                               
   
       </SafeAreaView>
     );
@@ -67,7 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 65,
     paddingHorizontal: 10,
-    backgroundColor: '#FFF',
+    backgroundColor: '#00BFFF',
 
   },
   containerTask: {
@@ -80,11 +95,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#141414',
+    borderColor: '#ccc',
     height: 45
   },
   btnAdd: {
-    backgroundColor: '#141414',
+    backgroundColor: '#4169E1',
     height: 45,
     alignItems: 'center',
     justifyContent: 'center',
