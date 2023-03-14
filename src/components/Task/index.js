@@ -18,7 +18,7 @@ export default function Task({data, deleteItem, editarItem}){ // acessando atrav
         </TouchableOpacity> 
 
         <View>
-          <TouchableWithoutFeedback  
+          <TouchableWithoutFeedback  // botao sem  nenhuma identidade visual
               style={styles.btnNome} 
               onPress={() => editarItem(data)} // ao clicar chama a funcao anonima que recebe editarItem(props de funcao editarTask) 
                                                // que seu parametro vai ser a data( data props da variavel task)   

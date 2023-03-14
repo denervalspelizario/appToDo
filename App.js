@@ -1,21 +1,62 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, View, FlatList, Keyboard } from 'react-native';
 import Login from './src/components/Login';
 import Task from './src/components/Task'; // importando tarefas
+import firebase from './src/services/FirebaseConnection'; // importando os dados do firebase
 
 
-let tasks = [ // sera como basde de dados
-  {key: '1', nome: 'Comprar hot dog para jantar'},
-  {key: '2', nome: 'Buscar roupa lavanderia'}
-]
+/*
+  Obs paras criar tarefa precisa criar databse la no firebase
+      após logado na conta onde esta criado o login
+      realtime > create database > teste mode 
+      após criado va em regras linhas read e write tira o 'now < 516156161'  e adiciona true nos 2
+*/
 
 
 export default function App() {
 
   const [user, setUser] = useState(null) // state user usada para controlar o login e logout se inicia null
   const [newTask, setNewTask] = useState('') // state inicia vazia
+  const [task, setTask] = useState([]) // state que vai armazenar as tasks(tarefas) como é uma array de objetos(vai ter a key e a tarefa)
+                                       // ela tem que iniciar vazia []
 
+  function adicaoTask(){ // funcao pra adicao de tarefas 
+    
+    if(newTask === ''){ // se newTask estiver vazia(state que recebe o dado input)
+      return;
+    } else {
 
+      let tarefas = firebase.database().ref('tarefas').child(user) // variavel recebe uma criacao de um FILHO tarefas(la do database) 
+                                                                   //linkado com o state user( user recebeu a id do usuario no database)  
+
+      let chave = tarefas.push().key   // variavel recebe uma adicao ao FILHO tarefas(la no database) uma key unica   
+                                       // ou seja primeiro linka o user a tarefas e depois cria uma CHAVE UNICA a cada tarefa                                                        
+
+      tarefas.child(chave).set({  //em tarefas recebe um filho key de numero unico e adiciona  
+        
+        nome: newTask   // além da key adiciona 'nome :' que recebe a state newTask( que é o dado digitado la no input)
+        // ou seja use > cria um filho tarefas > filho tarefa recebe key unica > alem da key o filho tarefas recebe nome: dado do input(newTask) 
+      })
+      .then(() =>{ // deu certo foi criado tudo
+
+        const data ={      // esse objeto serve para manter a tarefa ja digitada em conjunto com a nova tarefa adicionanda
+          key: chave,      // ou seja dado que ja existe + dado digtado agora leia abaixo
+          nome: newTask,
+        }
+
+        setTask(oldTasks => [...oldTasks, data])  
+        // state task(dado la do input) recebe  as tarefas que ja temos(o spread operator ...oldTasks) e adicionando 
+       // a MAIS o data ou seja oldtask = ...oldTask(tarefas ja passadas) + const data(contem nova key(linha 32) e o o dado que tiver em newTask)  
+      })
+
+      Keyboard.dismiss() // garante que o teclado vai fechar ou seja apos operacaod e adicaod e tarefa ele fecha
+      setNewTask('') // limpa a state newTask limpando o input
+
+    }
+
+  }
+
+  
 
   function deleteTask(key){ // funcao para deletar a tarefa - tem como parametro a key é por ela que vamos deletar
 
@@ -23,11 +64,16 @@ export default function App() {
 
   }
 
-  function editarTask(data){
+  function editarTask(data){  // funcao para editar a tarefa - tem como parametro a key é por ela que vamos editar
 
     console.log("Item clicado ", data)
 
   }
+
+  
+
+
+
 
   if( !user){ // se user tiver algum dado ou seja está logado retorna componente Login
 
@@ -48,14 +94,14 @@ export default function App() {
             onChangeText={(text) => setNewTask(text)} // state newTask recebendo dado do input
           />
 
-          <TouchableOpacity style={styles.btnAdd}>
+          <TouchableOpacity style={styles.btnAdd} onPress={adicaoTask}>
             <Text style={styles.btnText}>+</Text>
           </TouchableOpacity>
         </View>
         
         <FlatList
 
-          data={tasks} // base de dados que a flatlista vai receber
+          data={task} // base de dados que a flatlista vai receber
 
           keyExtractor={(item) => item.key} //linkando o id da lista task a lista do flatlist
           
